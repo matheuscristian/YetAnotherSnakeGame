@@ -35,7 +35,7 @@ inline bool isInSnake(const bodyPos &target, const bodyPos *snakeBody,
   return false;
 }
 
-mapPos genFruit(bodyPos *head, const int &snakeLength) {
+mapPos genFruit(bodyPos *head, const int snakeLength) {
   bodyPos *body = head - snakeLength + 1;
   mapPos fruit;
 
@@ -62,12 +62,9 @@ int main() {
   srand(time(NULL));
   mapPos fruit = genFruit(snake.head, snakeLen);
 
-  long long _t = 0, delayBFrame = 2e8;
+  useconds_t delay = 500000;
   while (1) {
-    if (_t < delayBFrame) {
-      _t++;
-      continue;
-    }
+    usleep(delay);
 
     getInput(currentDir);
 
@@ -81,14 +78,13 @@ int main() {
     if (snake.head->x == fruit.x && snake.head->y == fruit.y) {
       snake.grow(snakeLen);
       fruit = genFruit(snake.head, snakeLen);
-      delayBFrame -= 1e6;
+      delay -= 20000;
     }
 
     map.draw('-', snakeBack.x, snakeBack.y);
     map.draw('o', fruit.x, fruit.y);
     map.multipleDraw('#', (const mapPos *)snakeBody, snakeLen);
 
-    _t = 0;
     map.render();
   }
 
